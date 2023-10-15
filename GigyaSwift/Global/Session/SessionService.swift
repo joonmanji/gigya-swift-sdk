@@ -52,15 +52,19 @@ class SessionService: SessionServiceProtocol {
 
     private func registerAppStateEvents() {
         if registerAppState == false {
+#if canImport(NotificationCenter)
             NotificationCenter.default.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willResignActiveNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(appReturnToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+#endif
             registerAppState = true
         }
     }
 
     private func unregisterAppStateEvents() {
+#if canImport(NotificationCenter)
         NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+#endif
         registerAppState = false
     }
 
@@ -215,7 +219,9 @@ class SessionService: SessionServiceProtocol {
         clear()
 
         print("expired")
+#if canImport(NotificationCenter)
         NotificationCenter.default.post(name: .didGigyaSessionExpire, object: nil)
+#endif
     }
 
     func startSessionCountdownTimerIfNeeded() {
